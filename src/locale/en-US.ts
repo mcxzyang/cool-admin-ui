@@ -28,7 +28,6 @@ import localeMultiDAnalysis from '@/views/demo/visualization/multi-dimension-dat
 import localeRealTimeMonitor from '@/views/demo/visualization/real-time-monitor/locale/en-US';
 
 import localeMessageBox from '@/components/message-box/locale/en-US';
-// import localeLogin from '@/views/login/locale/en-US';
 import localeUserCenter from '@/views/system/user/center/locale/en-US';
 import localeSettings from './en-US/settings';
 
