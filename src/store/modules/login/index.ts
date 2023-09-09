@@ -45,7 +45,7 @@ const useLoginStore = defineStore('user', {
     async login(req: LoginReq) {
       try {
         const res = await userLogin(req);
-        setToken(res.data.token);
+        setToken(res.data.access_token);
       } catch (err) {
         clearToken();
         throw err;

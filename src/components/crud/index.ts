@@ -27,8 +27,9 @@ export default function download(
       // 获取文件名
       if (!fileName) {
         const contentDisposition = res.headers['content-disposition'];
-        const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
-        const result = pattern.exec(contentDisposition) || '';
+        const result = contentDisposition.split("filename*=utf-8''");
+        // const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
+        // const result = pattern.exec(contentDisposition) || '';
         // 对名字进行解码
         fileName = window.decodeURI(result[1]);
       } else {
@@ -56,8 +57,7 @@ export default function download(
     .catch(() => {
       Notification.warning({
         title: '警告',
-        content:
-          "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，这不仅会导致关键判断出错，也会导致导出的文件无法打开。",
+        content: '发生错误',
         duration: 10000,
         closable: true,
       });

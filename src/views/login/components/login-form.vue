@@ -137,7 +137,7 @@
           // password: encryptByRsa(values.password) || '',
           password: values.password,
           captcha: values.captcha,
-          key: values.uuid,
+          key: values.key,
         })
         .then(() => {
           const { redirect, ...othersQuery } = router.currentRoute.value.query;

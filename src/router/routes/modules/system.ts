@@ -6,18 +6,18 @@ const System: AppRouteRecordRaw = {
   path: '/system',
   component: DEFAULT_LAYOUT,
   meta: {
-    locale: 'menu.system',
+    locale: '系统管理',
     icon: 'settings',
     requiresAuth: true,
     order: 1,
   },
   children: [
     {
-      name: 'User',
-      path: '/system/user',
+      name: 'AdminUser',
+      path: '/system/admin-user',
       component: () => import('@/views/system/user/index.vue'),
       meta: {
-        locale: 'menu.system.user.list',
+        locale: '用户管理',
         requiresAuth: true,
       },
     },
@@ -26,7 +26,7 @@ const System: AppRouteRecordRaw = {
       path: '/system/role',
       component: () => import('@/views/system/role/index.vue'),
       meta: {
-        locale: 'menu.system.role.list',
+        locale: '角色管理',
         requiresAuth: true,
       },
     },
@@ -35,25 +35,7 @@ const System: AppRouteRecordRaw = {
       path: '/system/menu',
       component: () => import('@/views/system/menu/index.vue'),
       meta: {
-        locale: 'menu.system.menu.list',
-        requiresAuth: true,
-      },
-    },
-    {
-      name: 'Dept',
-      path: '/system/dept',
-      component: () => import('@/views/system/dept/index.vue'),
-      meta: {
-        locale: 'menu.system.dept.list',
-        requiresAuth: true,
-      },
-    },
-    {
-      name: 'Announcement',
-      path: '/system/announcement',
-      component: () => import('@/views/system/announcement/index.vue'),
-      meta: {
-        locale: 'menu.system.announcement.list',
+        locale: '菜单管理',
         requiresAuth: true,
       },
     },

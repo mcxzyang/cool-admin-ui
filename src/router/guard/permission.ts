@@ -3,7 +3,7 @@ import NProgress from 'nprogress'; // progress bar
 
 import usePermission from '@/hooks/permission';
 import { useLoginStore, useAppStore } from '@/store';
-import { fixedRoutes, demoRoutes } from '../routes';
+import { fixedRoutes } from '../routes';
 import { WHITE_LIST, NOT_FOUND } from '../constants';
 
 export default function setupPermissionGuard(router: Router) {
@@ -28,7 +28,6 @@ export default function setupPermissionGuard(router: Router) {
         ...appStore.appAsyncMenus,
         ...WHITE_LIST,
         ...fixedRoutes,
-        ...demoRoutes,
       ];
 
       let exist = false;
@@ -51,7 +50,7 @@ export default function setupPermissionGuard(router: Router) {
       else {
         const destination =
           Permission.findFirstPermissionRoute(
-            [...fixedRoutes, ...demoRoutes],
+            [...fixedRoutes],
             loginStore.roles[0]
           ) || NOT_FOUND;
         next(destination);

@@ -20,7 +20,7 @@
       <Menu v-if="topMenu" />
     </div>
     <ul class="right-side">
-      <li>
+      <!-- <li>
         <a-tooltip :content="$t('settings.search')">
           <a-button class="nav-btn" type="outline" :shape="'circle'">
             <template #icon>
@@ -57,7 +57,7 @@
             </a-doption>
           </template>
         </a-dropdown>
-      </li>
+      </li> -->
       <li>
         <a-tooltip
           :content="
@@ -127,7 +127,7 @@
           </a-button>
         </a-tooltip>
       </li>
-      <li>
+      <!-- <li>
         <a-tooltip :content="$t('settings.title')">
           <a-button
             class="nav-btn"
@@ -140,20 +140,7 @@
             </template>
           </a-button>
         </a-tooltip>
-      </li>
-      <li>
-        <a-tooltip :content="$t('settings.doc')">
-          <a-button
-            class="nav-btn"
-            type="outline"
-            :shape="'circle'"
-            href="https://doc.charles7c.top"
-            target="_blank"
-          >
-            <icon-book />
-          </a-button>
-        </a-tooltip>
-      </li>
+      </li> -->
       <li>
         <a-dropdown trigger="click">
           <a-avatar
@@ -193,8 +180,8 @@
   import { computed, ref, inject } from 'vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useLoginStore } from '@/store';
-  import { LOCALE_OPTIONS } from '@/locale';
-  import useLocale from '@/hooks/locale';
+  // import { LOCALE_OPTIONS } from '@/locale';
+  // import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
   import Menu from '@/components/menu/index.vue';
   import getAvatar from '@/utils/avatar';
@@ -203,9 +190,9 @@
   const appStore = useAppStore();
   const loginStore = useLoginStore();
   const { logout } = useUser();
-  const { changeLocale, currentLocale } = useLocale();
+  // const { changeLocale, currentLocale } = useLocale();
   const { isFullscreen, toggle: toggleFullScreen } = useFullscreen();
-  const locales = [...LOCALE_OPTIONS];
+  // const locales = [...LOCALE_OPTIONS];
   const theme = computed(() => {
     return appStore.theme;
   });
@@ -216,6 +203,7 @@
     valueDark: 'dark',
     valueLight: 'light',
     storageKey: 'arco-theme',
+    initialValue: 'light',
     onChanged(dark: boolean) {
       // overridden default behavior
       appStore.toggleTheme(dark);
@@ -225,11 +213,11 @@
   const handleToggleTheme = () => {
     toggleTheme();
   };
-  const setVisible = () => {
-    appStore.updateSettings({ globalSettings: true });
-  };
+  // const setVisible = () => {
+  //   appStore.updateSettings({ globalSettings: true });
+  // };
   const refBtn = ref();
-  const triggerBtn = ref();
+  // const triggerBtn = ref();
   const setPopoverVisible = () => {
     const event = new MouseEvent('click', {
       view: window,
@@ -241,14 +229,14 @@
   const handleLogout = () => {
     logout();
   };
-  const setDropDownVisible = () => {
-    const event = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true,
-    });
-    triggerBtn.value.dispatchEvent(event);
-  };
+  // const setDropDownVisible = () => {
+  //   const event = new MouseEvent('click', {
+  //     view: window,
+  //     bubbles: true,
+  //     cancelable: true,
+  //   });
+  //   triggerBtn.value.dispatchEvent(event);
+  // };
   const toggleDrawerMenu = inject('toggleDrawerMenu') as () => void;
 </script>
 

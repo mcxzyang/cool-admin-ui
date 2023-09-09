@@ -1,606 +1,197 @@
 <template>
   <div class="app-container">
-    <Breadcrumb :items="['menu.system', 'menu.system.user.list']" />
-    <a-card class="general-card" :title="$t('menu.system.user.list')">
+    <Breadcrumb :items="['系统管理', '用户管理']" />
+    <a-card class="general-card" title="用户管理">
       <a-row>
-        <a-col
-          :xs="9"
-          :sm="6"
-          :md="5"
-          :lg="4"
-          :xl="4"
-          style="margin-right: 10px"
-        >
-          <a-input-search
-            v-model="deptName"
-            placeholder="输入部门名称搜索"
-            style="margin-bottom: 8px; max-width: 240px"
-            allow-clear
-          />
-          <a-tree
-            ref="deptTreeRef"
-            :data="deptTree"
-            default-expand-all
-            show-line
-            @select="handleSelectNode"
-          />
-        </a-col>
-        <a-col :xs="15" :sm="18" :md="19" :lg="20" :xl="19">
-          <!-- 头部区域 -->
-          <div class="header">
-            <!-- 搜索栏 -->
-            <div v-if="showQuery" class="header-query">
-              <a-form ref="queryRef" :model="queryParams" layout="inline">
-                <a-form-item field="username" hide-label>
+        <a-col :flex="1">
+          <a-form
+            ref="queryRef"
+            :model="queryParams"
+            :label-col-props="{ span: 6 }"
+            :wrapper-col-props="{ span: 18 }"
+            label-align="left"
+          >
+            <a-row :gutter="16">
+              <a-col :span="8">
+                <a-form-item field="username" label="用户名">
                   <a-input
                     v-model="queryParams.username"
-                    placeholder="输入用户名搜索"
-                    allow-clear
-                    style="width: 150px"
-                    @press-enter="handleQuery"
+                    placeholder="用户名"
                   />
                 </a-form-item>
-                <a-form-item field="status" hide-label>
-                  <a-select
-                    v-model="queryParams.status"
-                    :options="DisEnableStatusEnum"
-                    placeholder="状态搜索"
-                    allow-clear
-                    style="width: 150px"
-                  />
+              </a-col>
+              <a-col :span="8">
+                <a-form-item field="name" label="姓名">
+                  <a-input v-model="queryParams.name" placeholder="姓名" />
                 </a-form-item>
-                <a-form-item field="createTime" hide-label>
-                  <date-range-picker v-model="queryParams.createTime" />
-                </a-form-item>
-                <a-form-item hide-label>
-                  <a-space>
-                    <a-button type="primary" @click="handleQuery">
-                      <template #icon><icon-search /></template>查询
-                    </a-button>
-                    <a-button @click="resetQuery">
-                      <template #icon><icon-refresh /></template>重置
-                    </a-button>
-                  </a-space>
-                </a-form-item>
-              </a-form>
-            </div>
-            <!-- 操作栏 -->
-            <div class="header-operation">
-              <a-row>
-                <a-col :span="12">
-                  <a-space>
-                    <a-button
-                      v-permission="['system:user:add']"
-                      type="primary"
-                      @click="toAdd"
-                    >
-                      <template #icon><icon-plus /></template>新增
-                    </a-button>
-                    <a-button
-                      v-permission="['system:user:update']"
-                      type="primary"
-                      status="success"
-                      :disabled="single"
-                      :title="single ? '请选择一条要修改的数据' : ''"
-                      @click="toUpdate(ids[0])"
-                    >
-                      <template #icon><icon-edit /></template>修改
-                    </a-button>
-                    <a-button
-                      v-permission="['system:user:delete']"
-                      type="primary"
-                      status="danger"
-                      :disabled="multiple"
-                      :title="multiple ? '请选择要删除的数据' : ''"
-                      @click="handleBatchDelete"
-                    >
-                      <template #icon><icon-delete /></template>删除
-                    </a-button>
-                    <a-button
-                      v-permission="['system:user:export']"
-                      :loading="exportLoading"
-                      type="primary"
-                      status="warning"
-                      @click="handleExport"
-                    >
-                      <template #icon><icon-download /></template>导出
-                    </a-button>
-                  </a-space>
-                </a-col>
-                <a-col :span="12">
-                  <right-toolbar
-                    v-model:show-query="showQuery"
-                    @refresh="getList"
-                  />
-                </a-col>
-              </a-row>
-            </div>
-          </div>
-
-          <!-- 列表区域 -->
-          <a-table
-            ref="tableRef"
-            row-key="id"
-            :data="dataList"
-            :loading="loading"
-            :row-selection="{
-              type: 'checkbox',
-              showCheckedAll: true,
-              onlyCurrent: false,
-            }"
-            :pagination="{
-              showTotal: true,
-              showPageSize: true,
-              total: total,
-              current: queryParams.page,
-            }"
-            :bordered="false"
-            column-resizable
-            stripe
-            size="large"
-            :scroll="{
-              x: '120%',
-            }"
-            @page-change="handlePageChange"
-            @page-size-change="handlePageSizeChange"
-            @selection-change="handleSelectionChange"
-          >
-            <template #columns>
-              <a-table-column title="ID" data-index="id" />
-              <a-table-column title="用户名" :width="115">
-                <template #cell="{ record }">
-                  <a-link @click="toDetail(record.id)">{{
-                    record.username
-                  }}</a-link>
-                </template>
-              </a-table-column>
-              <a-table-column title="昵称" data-index="nickname" :width="115" />
-              <a-table-column title="性别" align="center">
-                <template #cell="{ record }">
-                  <span v-if="record.gender === 1">男</span>
-                  <span v-else-if="record.gender === 2">女</span>
-                  <span v-else>未知</span>
-                </template>
-              </a-table-column>
-              <a-table-column title="头像" align="center">
-                <template #cell="{ record }">
-                  <a-avatar>
-                    <img
-                      :src="getAvatar(record.avatar, record.gender)"
-                      alt="头像"
-                    />
-                  </a-avatar>
-                </template>
-              </a-table-column>
-              <a-table-column title="联系方式" :width="170">
-                <template #cell="{ record }">
-                  {{ record.email }}<br v-if="record.email && record.phone" />
-                  {{ record.phone }}
-                </template>
-              </a-table-column>
-              <a-table-column title="状态" align="center">
-                <template #cell="{ record }">
-                  <a-switch
-                    v-model="record.status"
-                    :checked-value="1"
-                    :unchecked-value="2"
-                    :disabled="
-                      record.disabled ||
-                      !checkPermission(['system:user:update'])
-                    "
-                    @change="handleChangeStatus(record)"
-                  />
-                </template>
-              </a-table-column>
-              <a-table-column title="类型" align="center">
-                <template #cell="{ record }">
-                  <a-tag v-if="record.type === 1" color="red">系统内置</a-tag>
-                  <a-tag v-else color="arcoblue">自定义</a-tag>
-                </template>
-              </a-table-column>
-              <a-table-column title="创建人/创建时间" :width="175">
-                <template #cell="{ record }">
-                  {{ record.createUserString }}<br />
-                  {{ record.createTime }}
-                </template>
-              </a-table-column>
-              <a-table-column
-                v-if="
-                  checkPermission([
-                    'system:user:update',
-                    'system:user:delete',
-                    'system:user:password:reset',
-                    'system:user:role:update',
-                  ])
-                "
-                title="操作"
-                align="center"
-                fixed="right"
-                :width="90"
-              >
-                <template #cell="{ record }">
-                  <a-button
-                    v-permission="['system:user:update']"
-                    type="text"
-                    size="small"
-                    title="修改"
-                    @click="toUpdate(record.id)"
-                  >
-                    <template #icon><icon-edit /></template>
-                  </a-button>
-                  <a-popconfirm
-                    content="确定要删除当前选中的数据吗？"
-                    type="warning"
-                    @ok="handleDelete([record.id])"
-                  >
-                    <a-button
-                      v-permission="['system:user:delete']"
-                      type="text"
-                      size="small"
-                      title="删除"
-                      :disabled="record.disabled"
-                    >
-                      <template #icon><icon-delete /></template>
-                    </a-button>
-                  </a-popconfirm>
-                  <a-popconfirm
-                    content="确定要重置当前用户的密码吗？"
-                    type="warning"
-                    @ok="handleResetPassword(record.id)"
-                  >
-                    <a-button
-                      v-permission="['system:user:password:reset']"
-                      type="text"
-                      size="small"
-                      title="重置密码"
-                    >
-                      <template #icon
-                        ><svg-icon icon-class="privacy"
-                      /></template>
-                    </a-button>
-                  </a-popconfirm>
-                  <a-button
-                    v-permission="['system:user:role:update']"
-                    type="text"
-                    size="small"
-                    title="分配角色"
-                    :disabled="record.disabled"
-                    @click="toUpdateRole(record.id)"
-                  >
-                    <template #icon
-                      ><svg-icon icon-class="reference"
-                    /></template>
-                  </a-button>
-                </template>
-              </a-table-column>
-            </template>
-          </a-table>
+              </a-col>
+            </a-row>
+          </a-form>
+        </a-col>
+        <a-divider style="height: 40px" direction="vertical" />
+        <a-col :flex="'86px'" style="text-align: right">
+          <a-space :size="18">
+            <a-button type="primary" @click="handleQuery">
+              <template #icon>
+                <icon-search />
+              </template>
+              搜索
+            </a-button>
+            <a-button @click="resetQuery">
+              <template #icon>
+                <icon-refresh />
+              </template>
+              重置
+            </a-button>
+          </a-space>
         </a-col>
       </a-row>
-
-      <!-- 表单区域 -->
-      <a-modal
-        :title="title"
-        :visible="visible"
-        :width="580"
-        :mask-closable="false"
-        :esc-to-close="false"
-        unmount-on-close
-        render-to-body
-        @ok="handleOk"
-        @cancel="handleCancel"
-      >
-        <a-form
-          ref="formRef"
-          :model="form"
-          :rules="rules"
-          :label-col-style="{ width: '84px' }"
-          size="large"
-          layout="inline"
+      <a-divider style="margin-top: 0" />
+      <a-row style="margin-bottom: 16px">
+        <a-col :span="12">
+          <a-space>
+            <a-button type="primary" @click="handleAdd">
+              <template #icon>
+                <icon-plus />
+              </template>
+              新增
+            </a-button>
+          </a-space>
+        </a-col>
+        <a-col
+          :span="12"
+          style="display: flex; align-items: center; justify-content: end"
         >
-          <a-form-item label="用户名" field="username">
-            <a-input
-              v-model="form.username"
-              placeholder="请输入用户名"
-              style="width: 162px"
-            />
-          </a-form-item>
-          <a-form-item label="昵称" field="nickname">
-            <a-input
-              v-model="form.nickname"
-              placeholder="请输入昵称"
-              style="width: 162px"
-            />
-          </a-form-item>
-          <a-form-item label="邮箱" field="email">
-            <a-input
-              v-model="form.email"
-              placeholder="请输入邮箱"
-              style="width: 162px"
-            />
-          </a-form-item>
-          <a-form-item label="手机号码" field="phone">
-            <a-input
-              v-model="form.phone"
-              placeholder="请输入手机号码"
-              style="width: 162px"
-            />
-          </a-form-item>
-          <a-form-item label="性别" field="gender">
-            <a-radio-group v-model="form.gender">
-              <a-radio :value="1">男</a-radio>
-              <a-radio :value="2">女</a-radio>
-              <a-radio :value="0" disabled>未知</a-radio>
-            </a-radio-group>
-          </a-form-item>
-          <a-form-item label="所属部门" field="deptId">
-            <a-tree-select
-              v-model="form.deptId"
-              :data="deptOptions"
-              placeholder="请选择所属部门"
-              allow-clear
-              allow-search
-              :filter-tree-node="filterDeptOptions"
-              style="width: 431px"
-            />
-          </a-form-item>
-          <a-form-item
-            label="所属角色"
-            field="roleIds"
-            :disabled="form.disabled"
+          <a-button
+            type="primary"
+            status="warning"
+            :loading="exportLoading"
+            @click="handleExport"
           >
-            <a-select
-              v-model="form.roleIds"
-              :options="roleOptions"
-              placeholder="请选择所属角色"
-              :loading="roleLoading"
-              multiple
-              allow-clear
-              :allow-search="{ retainInputValue: true }"
-              style="width: 431px"
-            />
-          </a-form-item>
-          <a-form-item label="描述" field="description">
-            <a-textarea
-              v-model="form.description"
-              :max-length="200"
-              placeholder="请输入描述"
-              :auto-size="{
-                minRows: 3,
-              }"
-              show-word-limit
-              style="width: 431px"
-            />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-
-      <!-- 表单区域 -->
-      <a-modal
-        title="分配角色"
-        :visible="userRoleVisible"
-        :mask-closable="false"
-        :esc-to-close="false"
-        unmount-on-close
-        render-to-body
-        @ok="handleUpdateRole"
-        @cancel="handleCancel"
+            <template #icon>
+              <icon-download />
+            </template>
+            导出
+          </a-button>
+        </a-col>
+      </a-row>
+      <a-table
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :loading="loading"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+        :bordered="true"
+        size="large"
+        stripe
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
       >
-        <a-form ref="userRoleFormRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="所属角色" field="roleIds">
-            <a-select
-              v-model="form.roleIds"
-              :options="roleOptions"
-              placeholder="请选择所属角色"
-              :loading="roleLoading"
-              multiple
-              allow-clear
-              :allow-search="{ retainInputValue: true }"
-              style="width: 416px"
-            />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-
-      <!-- 详情区域 -->
-      <a-drawer
-        title="用户详情"
-        :visible="detailVisible"
-        :width="580"
-        :footer="false"
-        unmount-on-close
-        render-to-body
-        @cancel="handleDetailCancel"
-      >
-        <a-descriptions :column="2" bordered size="large">
-          <a-descriptions-item label="用户名">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.username }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="昵称">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.nickname }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="性别">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>
-              <span v-if="dataDetail.gender === 1">男</span>
-              <span v-else>女</span>
-            </span>
-          </a-descriptions-item>
-          <a-descriptions-item label="状态">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>
-              <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
-              <a-tag v-else color="red">禁用</a-tag>
-            </span>
-          </a-descriptions-item>
-          <a-descriptions-item label="邮箱">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.email || '无' }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="手机号码">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.phone || '无' }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="所属部门">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.deptName }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="所属角色">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.roleNames }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="创建人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.createUserString }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="创建时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.createTime }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="修改人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.updateUserString }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="修改时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.updateTime }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="描述">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.description }}</span>
-          </a-descriptions-item>
-        </a-descriptions>
-      </a-drawer>
+        <template #columns>
+          <a-table-column title="ID" data-index="id" />
+          <a-table-column title="用户名" data-index="username" />
+          <a-table-column title="姓名" data-index="name" />
+          <a-table-column title="状态" align="center" data-index="status">
+            <template #cell="{ record }">
+              <a-switch
+                v-model="record.status"
+                :checked-value="1"
+                :unchecked-value="0"
+              />
+            </template>
+          </a-table-column>
+          <a-table-column title="创建时间" data-index="created_at" />
+          <a-table-column title="操作" align="center">
+            <template #cell="{ record }">
+              <a-button
+                type="text"
+                size="small"
+                title="修改"
+                @click="handleEdit(record)"
+              >
+                <template #icon><icon-edit /></template>修改
+              </a-button>
+              <a-popconfirm
+                content="确定要删除当前选中的数据吗？"
+                type="warning"
+                @ok="handleDelete([record.id])"
+              >
+                <a-button
+                  type="text"
+                  size="small"
+                  title="删除"
+                  :disabled="record.disabled"
+                >
+                  <template #icon><icon-delete /></template>删除
+                </a-button>
+              </a-popconfirm>
+            </template>
+          </a-table-column>
+        </template>
+      </a-table>
     </a-card>
+    <FormModal
+      :visible="modalVisble"
+      :form-data="form"
+      @update-visible="updateVisible"
+      @update-success="updateSuccess"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
-  import { TreeNodeData } from '@arco-design/web-vue';
-  import {
-    DataRecord,
-    ListParam,
-    list,
-    get,
-    add,
-    update,
-    del,
-    resetPassword,
-    updateUserRole,
-  } from '@/api/system/user';
-  import { listDeptTree, listRoleDict } from '@/api/common';
-  import { LabelValueState } from '@/store/modules/dict/types';
-  import getAvatar from '@/utils/avatar';
-  import checkPermission from '@/utils/permission';
+  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import { DataRecord, ListParam, list, del } from '@/api/system/adminUser';
+
+  import FormModal from './components/form-modal.vue';
 
   const { proxy } = getCurrentInstance() as any;
-  const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
   const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({
-    username: '',
-    nickname: '',
-    gender: 1,
-    phone: undefined,
-    email: undefined,
-    status: 1,
-    pwdResetTime: '',
-    createUserString: '',
-    createTime: '',
-    updateUserString: '',
-    updateTime: '',
-    description: '',
-    roleIds: undefined,
-    deptId: undefined,
-  });
+
   const total = ref(0);
-  const ids = ref<Array<string>>([]);
-  const title = ref('');
-  const single = ref(true);
-  const multiple = ref(true);
-  const showQuery = ref(true);
   const loading = ref(false);
-  const detailLoading = ref(false);
   const exportLoading = ref(false);
-  const visible = ref(false);
-  const userRoleVisible = ref(false);
-  const detailVisible = ref(false);
-  const deptLoading = ref(false);
-  const roleLoading = ref(false);
-  const deptOptions = ref<TreeNodeData[]>([]);
-  const roleOptions = ref<LabelValueState[]>([]);
-  const deptTree = ref<TreeNodeData[]>([]);
-  const deptName = ref('');
+  const modalVisble = ref(false);
 
   const data = reactive({
     // 查询参数
     queryParams: {
       username: undefined,
+      name: undefined,
       status: undefined,
-      createTime: undefined,
-      deptId: undefined,
       page: 1,
       size: 10,
-      sort: ['createTime,desc'],
     },
     // 表单数据
     form: {} as DataRecord,
     // 表单验证规则
     rules: {
-      username: [{ required: true, message: '请输入用户名' }],
-      nickname: [{ required: true, message: '请输入昵称' }],
-      deptId: [{ required: true, message: '请选择所属部门' }],
-      roleIds: [{ required: true, message: '请选择所属角色' }],
+      name: [
+        { required: true, message: '请输入角色名称' },
+        {
+          match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,20}$/,
+          message:
+            '长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线',
+        },
+      ],
+      code: [
+        { required: true, message: '请输入角色编码' },
+        {
+          match: /^[a-zA-Z][a-zA-Z0-9_]{1,15}$/,
+          message: '长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头',
+        },
+      ],
+      dataScope: [{ required: true, message: '请选择数据权限' }],
+      sort: [{ required: true, message: '请输入角色排序' }],
     },
   });
-  const { queryParams, form, rules } = toRefs(data);
-
-  /**
-   * 查询部门树
-   *
-   * @param name 名称
-   */
-  const getDeptTree = (name: string) => {
-    listDeptTree({ name }).then((res) => {
-      deptTree.value = res.data;
-      setTimeout(() => {
-        proxy.$refs.deptTreeRef.expandAll();
-      }, 0);
-    });
-  };
-  getDeptTree('');
-  watch(deptName, (val) => {
-    getDeptTree(val);
-  });
+  const { queryParams, form } = toRefs(data);
 
   /**
    * 查询列表
@@ -620,187 +211,15 @@
   };
   getList();
 
-  /**
-   * 打开新增对话框
-   */
-  const toAdd = () => {
-    reset();
-    getDeptOptions();
-    getRoleOptions();
-    title.value = '新增用户';
-    visible.value = true;
+  // 新增
+  const handleAdd = () => {
+    form.value = {} as DataRecord;
+    modalVisble.value = true;
   };
 
-  /**
-   * 打开修改对话框
-   *
-   * @param id ID
-   */
-  const toUpdate = (id: string) => {
-    reset();
-    getDeptOptions();
-    getRoleOptions();
-    get(id).then((res) => {
-      form.value = res.data;
-      title.value = '修改用户';
-      visible.value = true;
-    });
-  };
-
-  /**
-   * 打开分配角色对话框
-   *
-   * @param id ID
-   */
-  const toUpdateRole = (id: string) => {
-    reset();
-    getRoleOptions();
-    get(id).then((res) => {
-      form.value = res.data;
-      userRoleVisible.value = true;
-    });
-  };
-
-  /**
-   * 查询部门列表
-   */
-  const getDeptOptions = () => {
-    deptLoading.value = true;
-    listDeptTree({})
-      .then((res) => {
-        deptOptions.value = res.data;
-      })
-      .finally(() => {
-        deptLoading.value = false;
-      });
-  };
-
-  /**
-   * 查询角色列表
-   */
-  const getRoleOptions = () => {
-    roleLoading.value = true;
-    listRoleDict({})
-      .then((res) => {
-        roleOptions.value = res.data;
-      })
-      .finally(() => {
-        roleLoading.value = false;
-      });
-  };
-
-  /**
-   * 重置表单
-   */
-  const reset = () => {
-    form.value = {
-      id: undefined,
-      username: '',
-      nickname: '',
-      gender: 1,
-      email: undefined,
-      phone: undefined,
-      description: '',
-      status: 1,
-      deptId: undefined,
-      roleIds: [] as Array<string>,
-      disabled: false,
-    };
-    proxy.$refs.formRef?.resetFields();
-  };
-
-  /**
-   * 取消
-   */
-  const handleCancel = () => {
-    visible.value = false;
-    userRoleVisible.value = false;
-    proxy.$refs.formRef?.resetFields();
-    proxy.$refs.userRoleFormRef?.resetFields();
-  };
-
-  /**
-   * 确定
-   */
-  const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
-      if (!valid) {
-        if (form.value.id !== undefined) {
-          update(form.value, form.value.id).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        } else {
-          add(form.value).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        }
-      }
-    });
-  };
-
-  /**
-   * 修改角色
-   */
-  const handleUpdateRole = () => {
-    proxy.$refs.userRoleFormRef.validate((valid: any) => {
-      if (!valid && form.value.id !== undefined) {
-        updateUserRole({ roleIds: form.value.roleIds }, form.value.id).then(
-          (res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          }
-        );
-      }
-    });
-  };
-
-  /**
-   * 查看详情
-   *
-   * @param id ID
-   */
-  const toDetail = async (id: string) => {
-    if (detailLoading.value) return;
-    detailLoading.value = true;
-    detailVisible.value = true;
-    get(id)
-      .then((res) => {
-        dataDetail.value = res.data;
-      })
-      .finally(() => {
-        detailLoading.value = false;
-      });
-  };
-
-  /**
-   * 关闭详情
-   */
-  const handleDetailCancel = () => {
-    detailVisible.value = false;
-  };
-
-  /**
-   * 批量删除
-   */
-  const handleBatchDelete = () => {
-    if (ids.value.length === 0) {
-      proxy.$message.info('请选择要删除的数据');
-    } else {
-      proxy.$modal.warning({
-        title: '警告',
-        titleAlign: 'start',
-        content: '确定要删除当前选中的数据吗？',
-        hideCancel: false,
-        onOk: () => {
-          handleDelete(ids.value);
-        },
-      });
-    }
+  const handleEdit = (record: DataRecord) => {
+    form.value = record;
+    modalVisble.value = true;
   };
 
   /**
@@ -810,31 +229,9 @@
    */
   const handleDelete = (ids: Array<string>) => {
     del(ids).then((res) => {
-      proxy.$message.success(res.msg);
+      proxy.$message.success(res.message);
       getList();
     });
-  };
-
-  /**
-   * 重置密码
-   *
-   * @param id ID
-   */
-  const handleResetPassword = (id: string) => {
-    resetPassword(id).then((res) => {
-      proxy.$message.success(res.msg);
-    });
-  };
-
-  /**
-   * 已选择的数据行发生改变时触发
-   *
-   * @param rowKeys ID 列表
-   */
-  const handleSelectionChange = (rowKeys: Array<any>) => {
-    ids.value = rowKeys;
-    single.value = rowKeys.length !== 1;
-    multiple.value = !rowKeys.length;
   };
 
   /**
@@ -844,67 +241,10 @@
     if (exportLoading.value) return;
     exportLoading.value = true;
     proxy
-      .download('/system/user/export', { ...queryParams.value }, '用户数据')
+      .download('/adminUser/list/export', { ...queryParams.value })
       .finally(() => {
         exportLoading.value = false;
       });
-  };
-
-  /**
-   * 修改状态
-   *
-   * @param record 记录信息
-   */
-  const handleChangeStatus = (record: DataRecord) => {
-    const { id } = record;
-    if (id) {
-      const tip = record.status === 1 ? '启用' : '禁用';
-      get(id)
-        .then((res) => {
-          res.data.status = record.status;
-          update(res.data, id)
-            .then(() => {
-              proxy.$message.success(`${tip}成功`);
-            })
-            .catch(() => {
-              record.status = record.status === 1 ? 2 : 1;
-            });
-        })
-        .catch(() => {
-          record.status = record.status === 1 ? 2 : 1;
-        });
-    }
-  };
-
-  /**
-   * 过滤部门列表
-   *
-   * @param searchValue 搜索值
-   * @param nodeData 节点值
-   */
-  const filterDeptOptions = (searchValue: string, nodeData: TreeNodeData) => {
-    if (nodeData.title) {
-      return (
-        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
-      );
-    }
-    return false;
-  };
-
-  /**
-   * 根据选中部门查询
-   *
-   * @param keys 选中节点 key
-   */
-  const handleSelectNode = (keys: Array<any>) => {
-    if (queryParams.value.deptId === keys[0]) {
-      queryParams.value.deptId = undefined;
-      // 如已选中，再次点击则取消选中
-      proxy.$refs.deptTreeRef.selectNode(keys, false);
-    } else {
-      queryParams.value.deptId = keys.length === 1 ? keys[0] : undefined;
-    }
-    handleQuery();
   };
 
   /**
@@ -941,11 +281,22 @@
     queryParams.value.size = pageSize;
     getList();
   };
+
+  // 更新弹框状态
+  const updateVisible = (visible: boolean) => {
+    modalVisble.value = visible;
+  };
+
+  // 弹框操作成功
+  const updateSuccess = () => {
+    modalVisble.value = false;
+    getList();
+  };
 </script>
 
 <script lang="ts">
   export default {
-    name: 'User',
+    name: 'AdminUser',
   };
 </script>
 

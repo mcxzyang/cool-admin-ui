@@ -12,10 +12,13 @@
       <div
         v-for="(icon, index) in iconList"
         :key="index"
+        class="icon-wrap"
         @click="handleSelectedIcon(icon)"
       >
-        <svg-icon :icon-class="icon" style="height: 32px; width: 16px" />
-        <span>{{ icon }}</span>
+        <div class="wraper">
+          <svg-icon :icon-class="icon" style="height: 32px; width: 16px" />
+          <span>{{ icon }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -77,15 +80,22 @@
     padding: 10px;
     .icon-list {
       height: 200px;
-      width: 420px;
+      width: 600px;
       overflow-y: scroll;
-      div {
-        height: 30px;
-        line-height: 35px;
+      .icon-wrap {
+        height: 40px;
+        line-height: 40px;
         margin-bottom: -5px;
         cursor: pointer;
         width: 33%;
         float: left;
+        :hover {
+          background-color: #f0f1f3;
+        }
+        .wraper {
+          display: flex;
+          align-items: center;
+        }
       }
       span {
         display: inline-block;

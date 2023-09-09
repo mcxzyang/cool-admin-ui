@@ -1,47 +1,40 @@
-import { TreeNodeData } from '@arco-design/web-vue';
 import axios from 'axios';
 import qs from 'query-string';
 
-const BASE_URL = '/adminMenu';
+const BASE_URL = '/adminUser';
 
 export interface DataRecord {
   id?: string;
-  title: string;
-  pid?: string | number;
-  type: number;
-  path?: string;
+  username: string;
   name?: string;
-  component?: string;
-  icon?: string;
-  ignoreCache: boolean;
-  hideInMenu: boolean;
-  permission?: string;
-  sort: number;
+  avatar?: string;
+  is_super_admin?: number;
   status?: number;
-  createUserString?: string;
-  createTime?: string;
-  updateUserString?: string;
-  updateTime?: string;
-  children?: Array<DataRecord>;
-  parentName?: string;
+  password?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ListParam {
+  username?: string;
   name?: string;
   status?: number;
+  page?: number;
+  size?: number;
+}
+
+export interface ListRes {
+  list: DataRecord[];
+  total: number;
 }
 
 export function list(params: ListParam) {
-  return axios.get<DataRecord[]>(`${BASE_URL}`, {
+  return axios.get<ListRes>(`${BASE_URL}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     },
   });
-}
-
-export function listTree() {
-  return axios.get<TreeNodeData[]>(`${BASE_URL}/list/tree`);
 }
 
 export function get(id: string) {

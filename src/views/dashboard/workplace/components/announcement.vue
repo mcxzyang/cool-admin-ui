@@ -67,7 +67,7 @@
           </a-typography-paragraph>
         </a-typography>
         <a-divider />
-        <v-md-preview :text="dataDetail.content"></v-md-preview>
+        <!-- <v-md-preview :text="dataDetail.content"></v-md-preview> -->
         <a-divider />
         <div v-if="dataDetail.updateTime" class="update-time-row">
           <span>

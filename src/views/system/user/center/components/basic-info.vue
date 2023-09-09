@@ -111,7 +111,7 @@
           nickname: form.value.nickname,
           gender: form.value.gender,
         })
-          .then((res) => {
+          .then(() => {
             loginStore.getInfo();
             proxy.$message.success(t('userCenter.basicInfo.form.save.success'));
           })

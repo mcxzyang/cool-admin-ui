@@ -12,7 +12,7 @@ export interface LoginReq {
 }
 
 export interface LoginRes {
-  token: string;
+  access_token: string;
 }
 
 export function login(req: LoginReq) {
@@ -24,9 +24,9 @@ export function logout() {
 }
 
 export function getUserInfo() {
-  return axios.get<UserState>(`${BASE_URL}/user/info`);
+  return axios.get<UserState>(`${BASE_URL}/me`);
 }
 
 export function listRoute() {
-  return axios.get<RouteRecordNormalized[]>(`${BASE_URL}/route`);
+  return axios.get<RouteRecordNormalized[]>(`/adminMenu/list/route`);
 }

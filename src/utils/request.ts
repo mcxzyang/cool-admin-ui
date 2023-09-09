@@ -59,23 +59,25 @@ axios.interceptors.response.use(
   },
   (error) => {
     const { response } = error;
-    const res = response.data;
-    if ([401].includes(res.code) && response.config.url !== '/auth/user/info') {
+    const { status } = response;
+    if ([401].includes(status) && response.config.url !== '/auth/me') {
       modalErrorWrapper({
         title: '确认退出',
-        content: res.message,
+        content: '登录已过期，请重新登录',
         maskClosable: false,
         escToClose: false,
         okText: '重新登录',
         async onOk() {
           const userStore = useLoginStore();
-          await userStore.logout();
+          // await userStore.logout();
+          userStore.logoutCallBack();
           window.location.reload();
         },
       });
     } else {
+      const { data } = response;
       messageErrorWrapper({
-        content: res.message || '网络错误',
+        content: data.message || '网络错误',
         duration: 5 * 1000,
       });
     }

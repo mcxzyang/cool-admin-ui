@@ -1,6 +1,6 @@
-import { fixedRoutes, demoRoutes } from '../routes';
+import { fixedRoutes } from '../routes';
 
-const mixinRoutes = [...fixedRoutes, ...demoRoutes];
+const mixinRoutes = [...fixedRoutes];
 
 const staticMenus = mixinRoutes.map((el) => {
   const { name, path, meta, redirect, children } = el;

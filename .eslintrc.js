@@ -42,7 +42,7 @@ module.exports = {
     'vue/singleline-html-element-content-newline': 0,
     'vue/max-attributes-per-line': 0,
     // Vue: Add extra rules
-    'vue/custom-event-name-casing': [2, 'camelCase'],
+    // 'vue/custom-event-name-casing': [2, 'camelCase'],
     'vue/no-v-text': 1,
     'vue/padding-line-between-blocks': 1,
     'vue/require-direct-export': 1,
