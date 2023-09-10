@@ -1,24 +1,16 @@
 import axios from 'axios';
 import qs from 'query-string';
 
-const BASE_URL = '/system/role';
+const BASE_URL = '/adminRole';
 
 export interface DataRecord {
   id?: string;
   name: string;
   code?: string;
-  sort?: number;
   description?: string;
-  menuIds?: Array<string>;
-  dataScope: number;
-  deptIds?: Array<string>;
+  menu_ids?: Array<string>;
   status?: number;
-  type?: number;
-  createUserString?: string;
-  createTime?: string;
-  updateUserString?: string;
-  updateTime?: string;
-  disabled?: boolean;
+  created_at?: string;
 }
 
 export interface ListParam {
@@ -26,7 +18,7 @@ export interface ListParam {
   status?: number;
   page?: number;
   size?: number;
-  sort?: Array<string>;
+  paging?: number;
 }
 
 export interface ListRes {
@@ -47,11 +39,11 @@ export function get(id: string) {
   return axios.get<DataRecord>(`${BASE_URL}/${id}`);
 }
 
-export function add(req: DataRecord) {
+export function addRecord(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function update(req: DataRecord, id: string) {
+export function updateRecord(id: string | number, req: DataRecord) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 

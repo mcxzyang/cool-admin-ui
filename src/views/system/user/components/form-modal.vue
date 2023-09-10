@@ -24,6 +24,18 @@
               <a-input v-model="modalData.password" type="password"></a-input>
             </a-form-item>
           </a-col>
+          <a-col :span="24">
+            <a-form-item label="所属角色" field="roles">
+              <a-select v-model="modalData.roles" multiple>
+                <a-option
+                  v-for="(item, key) in roles"
+                  :key="key"
+                  :value="item.id"
+                  >{{ item.name }}</a-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
         </a-row>
       </a-form>
     </div>
@@ -36,6 +48,7 @@
   import { Message } from '@arco-design/web-vue';
   import { cloneDeep } from 'lodash';
   import { addRecord, updateRecord, DataRecord } from '@/api/system/adminUser';
+  import { list as getRoles } from '@/api/system/role';
 
   const { proxy } = getCurrentInstance() as any;
 
@@ -52,6 +65,7 @@
 
   const modalVisible = ref(false);
   const emit = defineEmits(['update-visible', 'update-success']);
+  const roles = ref([]) as any;
 
   const generateForm = () => {
     return {
@@ -59,6 +73,7 @@
       name: undefined,
       username: '',
       password: undefined,
+      roles: [],
     };
   };
 
@@ -125,6 +140,13 @@
       });
     }
   };
+
+  const getRolelist = async () => {
+    const { data: roleList } = await getRoles({ paging: 0 });
+    roles.value = roleList;
+  };
+
+  getRolelist();
 </script>
 
 <style scoped></style>

@@ -13,6 +13,8 @@ export interface DataRecord {
   password?: string;
   created_at?: string;
   updated_at?: string;
+  roles?: Array<number | string>;
+  role_names?: Array<string>;
 }
 
 export interface ListParam {

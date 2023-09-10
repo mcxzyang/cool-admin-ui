@@ -144,7 +144,6 @@
     <FormModal
       :visible="modalVisble"
       :form-data="form"
-      :tree-data="treeData"
       @update-visible="updateVisible"
       @update-success="updateSuccess"
     />
@@ -153,14 +152,7 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import {
-    DataRecord,
-    ListParam,
-    list,
-    del,
-    listTree,
-  } from '@/api/system/menu';
-  import { TreeNodeData } from '@arco-design/web-vue';
+  import { DataRecord, ListParam, list, del } from '@/api/system/menu';
 
   import FormModal from './components/form-modal.vue';
 
@@ -171,7 +163,6 @@
   const loading = ref(false);
   const modalVisble = ref(false);
   const expandAll = ref(false);
-  const treeData = ref<TreeNodeData[]>();
 
   const data = reactive({
     // 查询参数
@@ -203,17 +194,11 @@
 
   // 新增
   const handleAdd = () => {
-    listTree().then((res) => {
-      treeData.value = res.data;
-    });
     form.value = {} as DataRecord;
     modalVisble.value = true;
   };
 
   const handleEdit = (record: DataRecord) => {
-    listTree().then((res) => {
-      treeData.value = res.data;
-    });
     form.value = record;
     modalVisble.value = true;
   };

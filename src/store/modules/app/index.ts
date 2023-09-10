@@ -47,18 +47,18 @@ const useAppStore = defineStore('app', {
     async fetchServerMenuConfig() {
       let notifyInstance: NotificationReturn | null = null;
       try {
-        notifyInstance = Notification.info({
-          id: 'menuNotice', // Keep the instance id the same
-          content: '菜单加载中...',
-          closable: true,
-        });
+        // notifyInstance = Notification.info({
+        //   id: 'menuNotice', // Keep the instance id the same
+        //   content: '菜单加载中...',
+        //   closable: true,
+        // });
         const { data } = await listRoute();
         this.serverMenu = data;
-        notifyInstance = Notification.success({
-          id: 'menuNotice',
-          content: '菜单加载成功',
-          closable: true,
-        });
+        // notifyInstance = Notification.success({
+        //   id: 'menuNotice',
+        //   content: '菜单加载成功',
+        //   closable: true,
+        // });
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         notifyInstance = Notification.error({

@@ -90,11 +90,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item
-            v-if="!form.isExternal && form.type === 1"
-            label="组件名称"
-            field="name"
-          >
+          <a-form-item v-if="form.type === 1" label="组件名称" field="name">
             <a-input
               v-model="form.name"
               placeholder="请输入组件名称"
@@ -102,7 +98,7 @@
         ></a-col>
         <a-col :span="12">
           <a-form-item
-            v-if="!form.isExternal && form.type === 1"
+            v-if="form.type === 1"
             label="组件路径"
             field="component"
           >
@@ -137,7 +133,7 @@
           <a-form-item label="上级菜单" field="pid">
             <a-tree-select
               v-model="form.pid"
-              :data="treeData"
+              :data="menuOptions"
               placeholder="请选择上级菜单"
               allow-clear
               allow-search
@@ -155,7 +151,12 @@
   import { ref, watch, reactive, toRefs, getCurrentInstance } from 'vue';
   import { cloneDeep, isEmpty } from 'lodash';
   import { Message, TreeNodeData } from '@arco-design/web-vue';
-  import { addRecord, updateRecord, DataRecord } from '@/api/system/menu';
+  import {
+    addRecord,
+    updateRecord,
+    DataRecord,
+    listTree,
+  } from '@/api/system/menu';
 
   const { proxy } = getCurrentInstance() as any;
 
@@ -165,10 +166,6 @@
       default: false,
     },
     formData: {
-      type: Object,
-      default: () => null,
-    },
-    treeData: {
       type: Object,
       default: () => null,
     },
@@ -196,7 +193,8 @@
     };
   };
 
-  const form = ref({});
+  const menuOptions = ref<TreeNodeData[]>([]);
+  const form = ref<DataRecord>(generateForm());
 
   const data = reactive({
     rules: {
@@ -207,6 +205,15 @@
     },
   });
   const { rules } = toRefs(data);
+
+  /**
+   * 查询菜单树
+   */
+  const getMenuTree = () => {
+    listTree().then((res) => {
+      menuOptions.value = res.data;
+    });
+  };
 
   watch(
     () => props.visible,
@@ -222,6 +229,9 @@
       form.value = isEmpty(value)
         ? generateForm()
         : (cloneDeep(value) as DataRecord);
+      if (value) {
+        getMenuTree();
+      }
     },
     { immediate: true }
   );

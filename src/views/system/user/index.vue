@@ -96,6 +96,35 @@
           <a-table-column title="ID" data-index="id" />
           <a-table-column title="用户名" data-index="username" />
           <a-table-column title="姓名" data-index="name" />
+          <a-table-column
+            title="所属角色"
+            align="center"
+            data-index="role_names"
+          >
+            <template #cell="{ record }">
+              <a-space wrap>
+                <a-tag
+                  v-for="(item, key) in record.role_names"
+                  :key="key"
+                  color="arcoblue"
+                  >{{ item }}</a-tag
+                >
+              </a-space>
+            </template>
+          </a-table-column>
+          <a-table-column
+            title="超级管理员"
+            align="center"
+            data-index="is_super_admin"
+          >
+            <template #cell="{ record }">
+              <a-switch
+                v-model="record.is_super_admin"
+                :checked-value="1"
+                :unchecked-value="0"
+              />
+            </template>
+          </a-table-column>
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
               <a-switch
