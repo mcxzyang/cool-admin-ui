@@ -90,6 +90,7 @@
         },
       ],
       username: [{ required: true, message: '请输入用户名' }],
+      roles: [{ required: true, message: '请至少选择一个所属角色' }],
     },
   });
   const { rules } = toRefs(data);

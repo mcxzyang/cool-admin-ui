@@ -4,8 +4,8 @@ import { useLoginStore } from '@/store';
 function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
   const { value } = binding;
   const loginStore = useLoginStore();
-  const { permissions, roles } = loginStore;
-  const superAdmin = 'admin';
+  // eslint-disable-next-line camelcase
+  const { permissions, roles, is_super_admin: isSuperAdmin } = loginStore;
   const allPermission = '*';
 
   if (Array.isArray(value) && value.length > 0) {
@@ -18,7 +18,7 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
     });
     // 检验角色编码
     const hasRole = roles.some((role: string) => {
-      return superAdmin === role || permissionValues.includes(role);
+      return isSuperAdmin || permissionValues.includes(role);
     });
     // 如果没有权限，移除元素
     if (!hasPermission && !hasRole && el.parentNode) {

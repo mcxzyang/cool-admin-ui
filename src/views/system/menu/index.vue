@@ -54,7 +54,11 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="handleAdd">
+            <a-button
+              v-permission="['system:menu:add']"
+              type="primary"
+              @click="handleAdd"
+            >
               <template #icon>
                 <icon-plus />
               </template>
@@ -100,6 +104,7 @@
             <template #cell="{ record }">
               <a-switch
                 v-model="record.status"
+                :disabled="!checkPermission(['system:menu:update'])"
                 :checked-value="1"
                 :unchecked-value="2"
               />
@@ -120,6 +125,7 @@
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
               <a-button
+                v-permission="['system:menu:update']"
                 type="text"
                 size="small"
                 title="修改"
@@ -132,7 +138,12 @@
                 type="warning"
                 @ok="handleDelete([record.id])"
               >
-                <a-button type="text" size="small" title="删除">
+                <a-button
+                  v-permission="['system:menu:delete']"
+                  type="text"
+                  size="small"
+                  title="删除"
+                >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
               </a-popconfirm>
@@ -153,7 +164,7 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { DataRecord, ListParam, list, del } from '@/api/system/menu';
-
+  import checkPermission from '@/utils/permission';
   import FormModal from './components/form-modal.vue';
 
   const { proxy } = getCurrentInstance() as any;

@@ -8,44 +8,20 @@
     size="large"
     class="form"
   >
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.username')"
-      disabled
-    >
+    <a-form-item label="用户名" disabled>
       <a-input
         v-model="form.username"
-        :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
-        max-length="16"
+        placeholder="请输入用户名"
+        :max-length="16"
       />
     </a-form-item>
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.nickname')"
-      field="nickname"
-    >
-      <a-input
-        v-model="form.nickname"
-        :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
-        max-length="20"
-      />
-    </a-form-item>
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.gender')"
-      field="gender"
-    >
-      <a-radio-group v-model="form.gender">
-        <a-radio :value="1">男</a-radio>
-        <a-radio :value="2">女</a-radio>
-        <a-radio :value="0" disabled>未知</a-radio>
-      </a-radio-group>
-    </a-form-item>
+
     <a-form-item>
       <a-space>
         <a-button :loading="loading" type="primary" @click="handleSave">
-          {{ $t('userCenter.basicInfo.form.save') }}
+          保存
         </a-button>
-        <a-button @click="handleReset">
-          {{ $t('userCenter.basicInfo.form.reset') }}
-        </a-button>
+        <a-button @click="handleReset"> 重置 </a-button>
       </a-space>
     </a-form-item>
   </a-form>
@@ -68,8 +44,6 @@
     // 表单数据
     form: {
       username: loginStore.username,
-      nickname: loginStore.nickname,
-      gender: loginStore.gender,
     } as BasicInfoModel,
     // 表单验证规则
     rules: computed((): Record<string, FieldRule[]> => {
@@ -77,21 +51,11 @@
         username: [
           {
             required: true,
-            message: t('userCenter.basicInfo.form.error.required.username'),
+            message: '请输入用户名',
           },
           {
             match: /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/,
-            message: t('userCenter.basicInfo.form.error.match.username'),
-          },
-        ],
-        nickname: [
-          {
-            required: true,
-            message: t('userCenter.basicInfo.form.error.required.nickname'),
-          },
-          {
-            match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,20}$/,
-            message: t('userCenter.basicInfo.form.error.match.nickname'),
+            message: '用户名格式错误',
           },
         ],
       };
@@ -108,8 +72,7 @@
       if (!valid) {
         loading.value = true;
         updateBasicInfo({
-          nickname: form.value.nickname,
-          gender: form.value.gender,
+          username: form.value.username,
         })
           .then(() => {
             loginStore.getInfo();

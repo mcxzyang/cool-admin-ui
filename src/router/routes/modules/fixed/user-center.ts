@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const UserCenter: AppRouteRecordRaw = {
-  path: '/login/user',
+  path: '/profile',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.user',
@@ -13,7 +13,7 @@ const UserCenter: AppRouteRecordRaw = {
     {
       name: 'UserCenter',
       path: 'center',
-      component: () => import('@/views/system/user/center/index.vue'),
+      component: () => import('@/views/system/profile/index.vue'),
       meta: {
         locale: 'menu.user.center',
         requiresAuth: true,

@@ -15,7 +15,7 @@ const System: AppRouteRecordRaw = {
     {
       name: 'AdminUser',
       path: '/system/admin-user',
-      component: () => import('@/views/system/user/index.vue'),
+      component: () => import('@/views/system/adminUser/index.vue'),
       meta: {
         locale: '用户管理',
         requiresAuth: true,

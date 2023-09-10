@@ -50,7 +50,11 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="handleAdd">
+            <a-button
+              v-permission="['system:adminUser:add']"
+              type="primary"
+              @click="handleAdd"
+            >
               <template #icon>
                 <icon-plus />
               </template>
@@ -63,6 +67,7 @@
           style="display: flex; align-items: center; justify-content: end"
         >
           <a-button
+            v-permission="['system:adminUser:export']"
             type="primary"
             status="warning"
             :loading="exportLoading"
@@ -120,6 +125,7 @@
             <template #cell="{ record }">
               <a-switch
                 v-model="record.is_super_admin"
+                :disabled="!checkPermission(['system:adminUser:update'])"
                 :checked-value="1"
                 :unchecked-value="0"
               />
@@ -129,6 +135,7 @@
             <template #cell="{ record }">
               <a-switch
                 v-model="record.status"
+                :disabled="!checkPermission(['system:adminUser:update'])"
                 :checked-value="1"
                 :unchecked-value="0"
               />
@@ -138,6 +145,7 @@
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
               <a-button
+                v-permission="['system:adminUser:update']"
                 type="text"
                 size="small"
                 title="修改"
@@ -151,10 +159,10 @@
                 @ok="handleDelete([record.id])"
               >
                 <a-button
+                  v-permission="['system:adminUser:delete']"
                   type="text"
                   size="small"
                   title="删除"
-                  :disabled="record.disabled"
                 >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
@@ -176,7 +184,7 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { DataRecord, ListParam, list, del } from '@/api/system/adminUser';
-
+  import checkPermission from '@/utils/permission';
   import FormModal from './components/form-modal.vue';
 
   const { proxy } = getCurrentInstance() as any;

@@ -8,8 +8,7 @@ import { useLoginStore } from '@/store';
  */
 export default function checkPermission(value: Array<string>) {
   const loginStore = useLoginStore();
-  const { permissions, roles } = loginStore;
-  const superAdmin = 'admin';
+  const { permissions, roles, is_super_admin: isSuperAdmin } = loginStore;
   const allPermission = '*';
 
   if (Array.isArray(value) && value.length > 0) {
@@ -22,7 +21,7 @@ export default function checkPermission(value: Array<string>) {
     });
     // 检验角色编码
     const hasRole = roles.some((role: string) => {
-      return superAdmin === role || permissionValues.includes(role);
+      return isSuperAdmin || permissionValues.includes(role);
     });
     return hasPermission || hasRole;
   }

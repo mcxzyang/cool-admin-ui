@@ -1,14 +1,11 @@
 import localeWorkplace from '@/views/dashboard/workplace/locale/en-US';
 
-import localeUser from '@/views/system/user/locale/en-US';
-
 import localeOnlineUser from '@/views/monitor/online/locale/en-US';
 import localeLoginLog from '@/views/monitor/log/login/locale/en-US';
 import localeOperationLog from '@/views/monitor/log/operation/locale/en-US';
 import localeSystemLog from '@/views/monitor/log/system/locale/en-US';
 
 import localeMessageBox from '@/components/message-box/locale/en-US';
-import localeUserCenter from '@/views/system/user/center/locale/en-US';
 import localeSettings from './en-US/settings';
 
 export default {
@@ -34,8 +31,6 @@ export default {
 
   ...localeWorkplace,
 
-  ...localeUser,
-
   ...localeOnlineUser,
   ...localeLoginLog,
   ...localeOperationLog,
@@ -43,6 +38,5 @@ export default {
 
   ...localeMessageBox,
   // ...localeLogin,
-  ...localeUserCenter,
   ...localeSettings,
 };

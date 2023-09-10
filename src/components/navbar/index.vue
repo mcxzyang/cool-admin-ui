@@ -147,10 +147,7 @@
             :size="32"
             :style="{ marginRight: '8px', cursor: 'pointer' }"
           >
-            <img
-              alt="avatar"
-              :src="getAvatar(loginStore.avatar, loginStore.gender)"
-            />
+            <img alt="avatar" :src="getAvatar(loginStore.avatar)" />
           </a-avatar>
           <template #content>
             <a-doption>

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.user.center']" />
+    <Breadcrumb :items="['个人中心']" />
     <a-row style="margin-bottom: 16px">
       <a-col :span="24">
         <UserPanel />
@@ -9,14 +9,11 @@
     <a-row class="wrapper">
       <a-col :span="24">
         <a-tabs default-active-key="1" type="rounded">
-          <a-tab-pane key="1" :title="$t('userCenter.tab.basicInfo')">
+          <a-tab-pane key="1" title="基本信息">
             <BasicInfo />
           </a-tab-pane>
-          <a-tab-pane key="2" :title="$t('userCenter.tab.securitySettings')">
+          <a-tab-pane key="2" title="安全设置">
             <SecuritySettings />
-          </a-tab-pane>
-          <a-tab-pane key="3" :title="$t('userCenter.tab.operationLog')">
-            <OperationLog />
           </a-tab-pane>
         </a-tabs>
       </a-col>
@@ -28,7 +25,6 @@
   import UserPanel from './components/user-panel.vue';
   import BasicInfo from './components/basic-info.vue';
   import SecuritySettings from './components/security-settings.vue';
-  import OperationLog from './components/operation-log.vue';
 </script>
 
 <script lang="ts">

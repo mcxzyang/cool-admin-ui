@@ -4,8 +4,6 @@ const BASE_URL = '/system/user/center';
 
 export interface BasicInfoModel {
   username: string;
-  nickname: string;
-  gender: number;
 }
 
 export interface AvatarRes {
@@ -13,25 +11,25 @@ export interface AvatarRes {
 }
 
 export function uploadAvatar(data: FormData) {
-  return axios.post<AvatarRes>(`${BASE_URL}/avatar`, data);
+  return axios.post<AvatarRes>(`/avatar`, data);
 }
 
 export interface UpdateBasicInfoReq {
-  nickname: string;
-  gender: number;
+  username: string;
 }
 
 export function updateBasicInfo(req: UpdateBasicInfoReq) {
-  return axios.patch(`${BASE_URL}/basic/info`, req);
+  return axios.patch(`/basic/info`, req);
 }
 
 export interface UpdatePasswordReq {
-  oldPassword: string;
-  newPassword: string;
+  password: string;
+  new_password: string;
+  new_password_confirmation: string;
 }
 
 export function updatePassword(req: UpdatePasswordReq) {
-  return axios.patch(`${BASE_URL}/password`, req);
+  return axios.patch(`/auth/updatePassword`, req);
 }
 
 export interface UpdateEmailReq {

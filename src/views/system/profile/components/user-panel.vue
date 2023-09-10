@@ -12,11 +12,7 @@
         <template #upload-button>
           <a-avatar :size="100" class="info-avatar">
             <template #trigger-icon><icon-camera /></template>
-            <img
-              v-if="avatarList.length"
-              :src="avatarList[0].url"
-              :alt="$t('userCenter.panel.avatar')"
-            />
+            <img v-if="avatarList.length" :src="avatarList[0].url" alt="头像" />
           </a-avatar>
         </template>
       </a-upload>
@@ -36,33 +32,9 @@
         align="right"
         layout="inline-horizontal"
       >
-        <a-descriptions-item :label="$t('userCenter.panel.label.nickname')">{{
-          loginStore.nickname
+        <a-descriptions-item label="用户名">{{
+          loginStore.username || '暂无'
         }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.gender')">
-          <div v-if="loginStore.gender === 1">
-            {{ $t('userCenter.panel.male') }}
-            <icon-man style="color: #19bbf1" />
-          </div>
-          <div v-else-if="loginStore.gender === 2">
-            {{ $t('userCenter.panel.female') }}
-            <icon-woman style="color: #fa7fa9" />
-          </div>
-          <div v-else>{{ $t('userCenter.panel.unknown') }}</div>
-        </a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{
-          loginStore.phone || '暂无'
-        }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{
-          loginStore.email || '暂无'
-        }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.deptName')">{{
-          loginStore.deptName
-        }}</a-descriptions-item>
-        <a-descriptions-item
-          :label="$t('userCenter.panel.label.registrationDate')"
-          >{{ loginStore.registrationDate }}</a-descriptions-item
-        >
       </a-descriptions>
     </a-space>
   </a-card>
@@ -81,7 +53,7 @@
   const avatar = {
     uid: '-2',
     name: 'avatar.png',
-    url: getAvatar(loginStore.avatar, loginStore.gender),
+    url: getAvatar(loginStore.avatar),
   };
   const avatarList = ref<FileItem[]>([avatar]);
 
@@ -107,7 +79,7 @@
         .then((res) => {
           onSuccess(res);
           loginStore.avatar = res.data.avatar;
-          proxy.$message.success(res.msg);
+          proxy.$message.success(res.message);
         })
         .catch((error) => {
           onError(error);

@@ -3,19 +3,11 @@
     <a-list-item>
       <UpdatePwd />
     </a-list-item>
-    <a-list-item>
-      <UpdatePhone />
-    </a-list-item>
-    <a-list-item>
-      <UpdateEmail />
-    </a-list-item>
   </a-list>
 </template>
 
 <script lang="ts" setup>
   import UpdatePwd from './security-settings/update-pwd.vue';
-  import UpdatePhone from './security-settings/update-phone.vue';
-  import UpdateEmail from './security-settings/update-email.vue';
 </script>
 
 <style scoped lang="less">

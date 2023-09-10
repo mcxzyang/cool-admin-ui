@@ -15,18 +15,12 @@ const useLoginStore = defineStore('user', {
   state: (): UserState => ({
     id: '',
     username: '',
-    nickname: '',
-    gender: 0,
     phone: undefined,
-    email: '',
     avatar: undefined,
     description: undefined,
-    pwdResetTime: undefined,
-    registrationDate: undefined,
-    deptId: '',
-    deptName: '',
     permissions: [],
     roles: [],
+    is_super_admin: undefined,
   }),
 
   getters: {

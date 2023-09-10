@@ -1,7 +1,5 @@
 import localeWorkplace from '@/views/dashboard/workplace/locale/zh-CN';
 
-import localeUser from '@/views/system/user/locale/zh-CN';
-
 import localeOnlineUser from '@/views/monitor/online/locale/zh-CN';
 import localeLoginLog from '@/views/monitor/log/login/locale/zh-CN';
 import localeOperationLog from '@/views/monitor/log/operation/locale/zh-CN';
@@ -9,7 +7,6 @@ import localeSystemLog from '@/views/monitor/log/system/locale/zh-CN';
 
 import localeMessageBox from '@/components/message-box/locale/zh-CN';
 // import localeLogin from '@/views/login/locale/zh-CN';
-import localeUserCenter from '@/views/system/user/center/locale/zh-CN';
 import localeSettings from './zh-CN/settings';
 
 export default {
@@ -32,8 +29,6 @@ export default {
 
   ...localeWorkplace,
 
-  ...localeUser,
-
   ...localeOnlineUser,
   ...localeLoginLog,
   ...localeOperationLog,
@@ -41,6 +36,5 @@ export default {
 
   ...localeMessageBox,
   // ...localeLogin,
-  ...localeUserCenter,
   ...localeSettings,
 };
