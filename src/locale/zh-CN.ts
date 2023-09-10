@@ -1,7 +1,6 @@
 import localeWorkplace from '@/views/dashboard/workplace/locale/zh-CN';
 
 import localeUser from '@/views/system/user/locale/zh-CN';
-import localeRole from '@/views/system/role/locale/zh-CN';
 
 import localeOnlineUser from '@/views/monitor/online/locale/zh-CN';
 import localeLoginLog from '@/views/monitor/log/login/locale/zh-CN';
@@ -34,7 +33,6 @@ export default {
   ...localeWorkplace,
 
   ...localeUser,
-  ...localeRole,
 
   ...localeOnlineUser,
   ...localeLoginLog,

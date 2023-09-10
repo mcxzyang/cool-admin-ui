@@ -11,7 +11,6 @@ export interface DataRecord {
   type: number;
   path?: string;
   name?: string;
-  component?: string;
   icon?: string;
   ignoreCache: boolean;
   hideInMenu: boolean;

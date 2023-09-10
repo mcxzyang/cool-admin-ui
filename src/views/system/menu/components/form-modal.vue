@@ -89,22 +89,13 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <a-col :span="24">
           <a-form-item v-if="form.type === 1" label="组件名称" field="name">
             <a-input
               v-model="form.name"
               placeholder="请输入组件名称"
             /> </a-form-item
         ></a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-if="form.type === 1"
-            label="组件路径"
-            field="component"
-          >
-            <a-input v-model="form.component" placeholder="请输入组件路径" />
-          </a-form-item>
-        </a-col>
         <a-col :span="12">
           <a-form-item
             v-if="form.type === 1"
@@ -183,7 +174,6 @@
       type: 1,
       path: undefined,
       name: undefined,
-      component: undefined,
       icon: undefined,
       ignoreCache: false,
       hideInMenu: false,
