@@ -99,7 +99,6 @@
           </a-table-column>
           <a-table-column title="排序" align="center" data-index="sort" />
           <a-table-column title="权限标识" data-index="permission" />
-          <a-table-column title="组件路径" data-index="component" />
           <a-table-column title="状态" align="center">
             <template #cell="{ record }">
               <a-switch
@@ -107,6 +106,7 @@
                 :disabled="!checkPermission(['system:menu:update'])"
                 :checked-value="1"
                 :unchecked-value="2"
+                @change="handleChangeStatus(record)"
               />
             </template>
           </a-table-column>
@@ -163,7 +163,13 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import { DataRecord, ListParam, list, del } from '@/api/system/menu';
+  import {
+    DataRecord,
+    ListParam,
+    list,
+    del,
+    updateRecord,
+  } from '@/api/system/menu';
   import checkPermission from '@/utils/permission';
   import FormModal from './components/form-modal.vue';
 
@@ -212,6 +218,24 @@
   const handleEdit = (record: DataRecord) => {
     form.value = record;
     modalVisble.value = true;
+  };
+
+  /**
+   * 修改状态
+   *
+   * @param record 记录信息
+   */
+  const handleChangeStatus = (record: DataRecord) => {
+    if (record.id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      updateRecord(record.id, record)
+        .then(() => {
+          proxy.$message.success(`${tip}成功`);
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 0 : 1;
+        });
+    }
   };
 
   /**
