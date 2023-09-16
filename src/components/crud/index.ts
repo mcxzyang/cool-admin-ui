@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'query-string';
 import { Notification } from '@arco-design/web-vue';
 import dayjs from 'dayjs';
 
@@ -18,9 +17,6 @@ export default function download(
   return axios
     .get(url, {
       params,
-      paramsSerializer: (obj) => {
-        return qs.stringify(obj);
-      },
       responseType: 'blob',
     })
     .then(async (res) => {
