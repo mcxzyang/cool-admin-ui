@@ -144,7 +144,7 @@
 
   const getRolelist = async () => {
     const { data: roleList } = await getRoles({ paging: 0 });
-    roles.value = roleList;
+    roles.value = roleList?.list;
   };
 
   getRolelist();
