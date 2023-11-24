@@ -5,7 +5,7 @@ const modalErrorWrapper = (options: any) => {
   if (modalInstance) {
     modalInstance.close();
   }
-  modalInstance = Modal.error(options);
+  modalInstance = Modal.confirm(options);
 };
 
 export default modalErrorWrapper;

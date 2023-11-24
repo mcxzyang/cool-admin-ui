@@ -8,7 +8,6 @@
         <a-layout-sider
           v-if="renderMenu"
           v-show="!hideMenu"
-          theme="dark"
           class="layout-sider"
           breakpoint="xl"
           :collapsed="collapsed"
